@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="board">
+	
+	<select id="getAllBoardList" resultType="boardVo">
+		select *
+		  from board2
+	</select>
+	
+	<select id="getBoard" parameterType="Integer" resultType="boardVo">
+		select *
+		  from board2
+		 where board_no = #{board_no}
+	</select>
+	
+	<insert id="insertBoard" parameterType="boardVo">
+		insert into board2 (BOARD_NO, BOARD_NAME, USABLE, ENROLLMENT_DATE)
+		values(board2_seq.nextval, #{board_name}, #{usable}, sysdate)
+	</insert>
+	
+	<update id="updateBoard" parameterType="boardVo">
+		update board2 set usable = '${usable}' where board_no = ${board_no}
+	</update>
+	
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="reply">
+
+<select id="getReplyList" parameterType="Integer" resultType="ReplyVo">
+	select * from reply2 where post_no = #{post_no}
+</select>
+
+<insert id="insertReply" parameterType="ReplyVo">
+	insert into reply2 (reply_no, content, write_date, post_no, user_id, usable)
+	values(reply2_seq.nextval, #{content}, sysdate, #{post_no}, #{user_id}, 'Y')
+</insert>
+
+<update id="updateReply" parameterType="ReplyVo">
+	update reply2
+	   set content = #{content},
+	       write_date = sysdate
+	where reply_no = #{reply_no}
+</update>
+
+<update id="disabledReply" parameterType="Integer">
+	update reply2
+	   set usable = 'N'
+	 where reply_no = #{reply_no}
+</update>
+
+</mapper>

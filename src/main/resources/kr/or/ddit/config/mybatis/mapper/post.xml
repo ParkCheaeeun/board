@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="post">
+	
+	<select id="getPostList" parameterType="Integer" resultType="postVo">
+		select post_no, board_no, parent_post_no,
+			   lpad(' ',(level-1)*4, ' ') || post_title post_title,
+			   post_content,user_id,write_date, parent_post_no, usable
+		  from post2
+		 where board_no = #{board_no}
+    start with parent_post_no is null
+    connect by prior post_no = parent_post_no
+    order siblings by post_no desc, group_no
+	</select>
+	
+	<select id="getPostPagingList" resultType="postVo" parameterType="pageVo">
+	  	select a.*
+		from
+		   (select rownum rn, a.*
+		    from
+		        (select post_no, board_no, parent_post_no, lpad(' ',(level-1)*4, ' ') || post_title as post_title,
+			   post_content,user_id,write_date, usable
+				  from post2
+				 where board_no = #{board_no}
+		    start with parent_post_no is null
+		    connect by prior post_no = parent_post_no
+		    order siblings by post_no desc, group_no) a) a
+		where rn between #{pagesize}*(#{page}-1)+1 and #{page} * #{pagesize}
+	</select>
+	
+	<select id="getPost" parameterType="Integer" resultType="postVo">
+		select *
+		  from post2
+		 where post_no = #{post_no}
+	</select>
+	
+	<insert id="insertPost" parameterType="postVo">
+		insert into post2 (POST_NO, BOARD_NO, POST_TITLE, POST_CONTENT, USER_ID, WRITE_DATE, PARENT_POST_NO)
+		values(post2_seq.nextval,
+		 #{board_no},
+		 #{post_title},
+		 #{post_content},
+		 #{user_id}, 
+		 sysdate,
+		 case #{parent_post_no, jdbcType=INTEGER} when 0 then null
+		 	   else #{parent_post_no, jdbcType=INTEGER} end 
+		 )
+	</insert>
+	
+	<update id="updatePost" parameterType="postVo">
+		update post2
+		   set post_title = #{post_title},
+		   	   post_content = #{post_content},
+		   	   write_date = sysdate
+		where post_no = #{post_no}
+	</update>
+	
+	<update id="updateGroupNo">
+		update post2
+		set group_no 
+		= case post_no when 1 then 1
+		    		   when 9 then 1 
+		  			   when 3 then 2
+					   when 2 then 2
+		 			   else 4 end
+	</update>
+	
+	<update id="disabledPost">
+		update post2
+		set usable = 'N'
+		where post_no = #{post_no}
+	</update>
+	
+	
+	<select id="getPostTotalCnt" resultType="Integer">
+		select count(*) from post2
+	</select>
+</mapper>

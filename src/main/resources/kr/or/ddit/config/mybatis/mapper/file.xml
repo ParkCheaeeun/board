@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="file">
+
+<insert id="insertFile" parameterType="fileVo">
+	insert into file2 values(file2_seq.nextval, #{upload_file_name}, #{real_file_route},
+	case #{post_no, jdbcType=INTEGER} when 0 then post2_seq.currval
+	else #{post_no} end)
+</insert>
+
+<update id="updateFile" parameterType="fileVo">
+	update file2 set upload_file_name = #{upload_file_name}, real_file_route = #{real_file_route}
+	where file_no = #{file_no}
+</update>
+
+<delete id="deleteFile" parameterType="Integer">
+	delete from file2 where file_no = #{file_no}
+</delete>
+
+<select id="getFile" parameterType="Integer" resultType="fileVo">
+	select * from file2 where post_no = #{post_no}
+</select>
+
+<select id="getOneFile" parameterType="Integer" resultType="fileVo">
+	select * from file2 where file_no = #{file_no}
+</select>
+
+</mapper>
