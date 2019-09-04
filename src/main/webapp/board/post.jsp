@@ -68,9 +68,7 @@
 						     style="text-decoration: none;">삭제</a>
 						</label>
 						<label style="float:right;">
-							<a onclick="update();" style="text-decoration: none;">수정&nbsp;&n
-							-`````````````
-							bsp;</a>
+							<a onclick="update();" style="text-decoration: none;">수정&nbsp;&nbsp;</a>
 						</label>
 					</c:if>
 				</div>
